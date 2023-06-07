@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +27,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isPlaying = false;
 
+  void vibrateDevice() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate(duration: 2000);
+    }
+  }
+
   void resetPomodoro() {
     if (!isPlaying) {
       setState(() {
@@ -42,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColorSelector = (backgroundColorSelector + 1) % 6;
         isPlaying = false;
         totalSeconds = pomodoroTimeSetting;
+        vibrateDevice();
       });
       timer.cancel();
     } else {
