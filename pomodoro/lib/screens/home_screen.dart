@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const Color(0xFF85ac20),
   ];
   int backgroundColorSelector = 0;
-  int pomodoroTimeSetting = 1500;
+  int pomodoroTimeSetting = 4;
   late int totalSeconds = pomodoroTimeSetting;
   int totalPomodoros = 0;
   late Timer timer;
