@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const Color(0xFF85ac20),
   ];
   int backgroundColorSelector = 0;
-  int pomodoroTimeSetting = 4;
+  int pomodoroTimeSetting = 1500;
   late int totalSeconds = pomodoroTimeSetting;
   int totalPomodoros = 0;
   late Timer timer;
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void vibrateDevice() async {
     if (await Vibration.hasVibrator() ?? false) {
-      Vibration.vibrate(duration: 2000);
+      Vibration.vibrate(duration: 1600);
     }
   }
 
