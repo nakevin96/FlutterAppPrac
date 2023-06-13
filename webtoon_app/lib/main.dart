@@ -5,6 +5,7 @@ import 'package:webtoon_app/screens/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "lib/.env");
+
   runApp(const App());
 }
 
@@ -18,7 +19,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const HomeScreen(),
+      home: HomeScreen(),
     );
   }
 }
