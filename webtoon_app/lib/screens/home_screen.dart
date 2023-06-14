@@ -16,6 +16,14 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         foregroundColor: Colors.green,
         backgroundColor: Colors.white,
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {},
+        //     icon: const Icon(
+        //       Icons.favorite_outline_outlined,
+        //     ),
+        //   ),
+        // ],
         elevation: 2,
         title: const Text(
           '오늘의 웹툰',
