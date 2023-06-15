@@ -20,7 +20,15 @@ class _HomeScreenState extends State<HomeScreen> {
     const Color(0xFF467EC6),
     const Color(0xFF85ac20),
   ];
-  int backgroundColorSelector = 0;
+  List<String> backgroundImgList = [
+    "ine",
+    "jingburger",
+    "lilpa",
+    "jururu",
+    "gosegu",
+    "viichan",
+  ];
+  int backgroundSelector = 0;
   int pomodoroTimeSetting = 1500;
   late int totalSeconds = pomodoroTimeSetting;
   int totalPomodoros = 0;
@@ -72,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (totalSeconds == 0) {
       setState(() {
         totalPomodoros++;
-        backgroundColorSelector = (backgroundColorSelector + 1) % 6;
+        backgroundSelector = (backgroundSelector + 1) % 6;
         isPlaying = false;
         totalSeconds = pomodoroTimeSetting;
         vibrateDevice();
@@ -103,34 +111,22 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void refreshTimer() {
-    if (!isPlaying) {
-      if (totalSeconds == pomodoroTimeSetting) {
-        setState(() {
-          backgroundColorSelector = (backgroundColorSelector + 1) % 6;
-        });
-      } else {
-        setState(() {
-          totalSeconds = pomodoroTimeSetting;
-        });
-      }
-    } else {
-      setState(() {
-        backgroundColorSelector = (backgroundColorSelector + 1) % 6;
-      });
-    }
-  }
-
   String secondsToMinute(int seconds) {
     dynamic duration = Duration(seconds: seconds);
     duration = duration.toString().split(".")[0].split(":");
     return '${duration[1]}:${duration[2]}';
   }
 
+  void onCharacterPressed() {
+    setState(() {
+      backgroundSelector = (backgroundSelector + 1) % 6;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColorList[backgroundColorSelector],
+      backgroundColor: backgroundColorList[backgroundSelector],
       body: Column(
         children: [
           Flexible(
@@ -138,7 +134,86 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               alignment: Alignment.bottomCenter,
               child: TextButton(
-                onPressed: refreshTimer,
+                onPressed: () {
+                  if (!isPlaying) {
+                    if (totalSeconds == pomodoroTimeSetting) {
+                      // showDialog(
+                      //   context: context,
+                      //   barrierDismissible: false,
+                      //   builder: (BuildContext contenxt) {
+                      //     return AlertDialog(
+                      //       content: Column(
+                      //         children: [
+                      //           const Text('시간을 변경합니다.'),
+                      //           Padding(
+                      //             padding: const EdgeInsets.only(top: 20),
+                      //             child: Row(
+                      //               mainAxisAlignment:
+                      //                   MainAxisAlignment.spaceBetween,
+                      //               children: [
+                      //                 IconButton(
+                      //                   onPressed: () {
+                      //                     setState(() {
+                      //                       totalSeconds -= 300;
+                      //                     });
+                      //                   },
+                      //                   icon: const Icon(Icons.remove),
+                      //                 ),
+                      //                 Text(
+                      //                   secondsToMinute(totalSeconds),
+                      //                   style: const TextStyle(
+                      //                     fontSize: 40,
+                      //                     fontWeight: FontWeight.w600,
+                      //                   ),
+                      //                 ),
+                      //                 IconButton(
+                      //                   onPressed: () {
+                      //                     setState(() {
+                      //                       totalSeconds += 300;
+                      //                     });
+                      //                   },
+                      //                   icon: const Icon(Icons.add),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //       actions: [
+                      //         TextButton(
+                      //           onPressed: () {
+                      //             Navigator.of(context).pop();
+                      //           },
+                      //           child: const Text('적용'),
+                      //         )
+                      //       ],
+                      //     );
+                      //   },
+                      // );
+                    } else {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: const Text('시간을 초기화합니다'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    totalSeconds = pomodoroTimeSetting;
+                                  });
+                                },
+                                child: const Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  }
+                },
                 child: Text(
                   secondsToMinute(totalSeconds),
                   style: TextStyle(
@@ -151,7 +226,18 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Flexible(
-            flex: 3,
+            flex: 2,
+            child: Center(
+              child: GestureDetector(
+                onTap: onCharacterPressed,
+                child: Image.asset(
+                  'assets/images/${backgroundImgList[backgroundSelector]}.png',
+                ),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 1,
             child: Center(
               child: IconButton(
                 iconSize: 120,
@@ -183,7 +269,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Flexible(
                           flex: 1,
                           child: Row(
-                            children: [Expanded(child: SizedBox())],
+                            children: [
+                              Expanded(
+                                child: SizedBox(),
+                              )
+                            ],
                           ),
                         ),
                         Flexible(
