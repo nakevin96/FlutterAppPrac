@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,6 +26,30 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalPomodoros = 0;
   late Timer timer;
 
+  // shared_preferences 적용
+  late SharedPreferences prefs;
+
+  Future initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    final totalPomodoroCount = prefs.getInt('totalPomodoroCount');
+    if (totalPomodoroCount != null) {
+      setState(() {
+        totalPomodoros = totalPomodoroCount;
+      });
+    } else {
+      await prefs.setInt('totalPomodoroCount', 0);
+      setState(() {
+        totalPomodoros = 0;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initPrefs();
+  }
+
   bool isPlaying = false;
 
   void vibrateDevice() async {
@@ -33,16 +58,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void resetPomodoro() {
+  void resetPomodoro() async {
     if (!isPlaying) {
       setState(() {
         totalPomodoros = 0;
         totalSeconds = pomodoroTimeSetting;
       });
+      await prefs.setInt('totalPomodoroCount', 0);
     }
   }
 
-  void onTick(Timer timer) {
+  void onTick(Timer timer) async {
     if (totalSeconds == 0) {
       setState(() {
         totalPomodoros++;
@@ -52,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
         vibrateDevice();
       });
       timer.cancel();
+      await prefs.setInt('totalPomodoroCount', totalPomodoros);
     } else {
       setState(() {
         totalSeconds--;
