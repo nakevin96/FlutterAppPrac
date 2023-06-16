@@ -141,6 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     } else {
                       customShowDialog(
                         context: context,
+                        backgroundColor:
+                            backgroundColorList[backgroundSelector],
                         mainContent: "시간을 초기화 합니다!",
                         acceptBtnText: "확인",
                         cancelBtnText: "취소",
