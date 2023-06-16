@@ -137,78 +137,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   if (!isPlaying) {
                     if (totalSeconds == pomodoroTimeSetting) {
-                      // showDialog(
-                      //   context: context,
-                      //   barrierDismissible: false,
-                      //   builder: (BuildContext contenxt) {
-                      //     return AlertDialog(
-                      //       content: Column(
-                      //         children: [
-                      //           const Text('시간을 변경합니다.'),
-                      //           Padding(
-                      //             padding: const EdgeInsets.only(top: 20),
-                      //             child: Row(
-                      //               mainAxisAlignment:
-                      //                   MainAxisAlignment.spaceBetween,
-                      //               children: [
-                      //                 IconButton(
-                      //                   onPressed: () {
-                      //                     setState(() {
-                      //                       totalSeconds -= 300;
-                      //                     });
-                      //                   },
-                      //                   icon: const Icon(Icons.remove),
-                      //                 ),
-                      //                 Text(
-                      //                   secondsToMinute(totalSeconds),
-                      //                   style: const TextStyle(
-                      //                     fontSize: 40,
-                      //                     fontWeight: FontWeight.w600,
-                      //                   ),
-                      //                 ),
-                      //                 IconButton(
-                      //                   onPressed: () {
-                      //                     setState(() {
-                      //                       totalSeconds += 300;
-                      //                     });
-                      //                   },
-                      //                   icon: const Icon(Icons.add),
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //       actions: [
-                      //         TextButton(
-                      //           onPressed: () {
-                      //             Navigator.of(context).pop();
-                      //           },
-                      //           child: const Text('적용'),
-                      //         )
-                      //       ],
-                      //     );
-                      //   },
-                      // );
+                      // TODO: 1. 초기 포모도로 시간 조정
                     } else {
-                      showDialog(
+                      customShowDialog(
                         context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            content: const Text('시간을 초기화합니다'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    totalSeconds = pomodoroTimeSetting;
-                                  });
-                                },
-                                child: const Text('확인'),
-                              ),
-                            ],
-                          );
+                        mainContent: "시간을 초기화 합니다!",
+                        acceptBtnText: "확인",
+                        cancelBtnText: "취소",
+                        onAcceptBtnPressed: () {
+                          setState(() {
+                            totalSeconds = pomodoroTimeSetting;
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        onCancelBtnPressed: () {
+                          Navigator.of(context).pop();
                         },
                       );
                     }
@@ -320,7 +263,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                             .displayLarge
                                             ?.color,
                                         iconSize: 32,
-                                        onPressed: resetPomodoro,
+                                        onPressed: () {
+                                          customShowDialog(
+                                            backgroundColor:
+                                                backgroundColorList[
+                                                    backgroundSelector],
+                                            context: context,
+                                            mainContent:
+                                                "고생했어요!🤓\n포모도로를 초기화 하시겠어요?",
+                                            acceptBtnText: "초기화 해 줘",
+                                            cancelBtnText: "아니 좀 더 할게",
+                                            onAcceptBtnPressed: () {
+                                              resetPomodoro();
+                                              Navigator.of(context).pop();
+                                            },
+                                            onCancelBtnPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          );
+                                        },
                                         icon: const Icon(Icons.refresh_sharp)),
                                   ],
                                 ),
@@ -337,6 +298,64 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<dynamic> customShowDialog({
+    required BuildContext context,
+    required String mainContent,
+    required String acceptBtnText,
+    required String cancelBtnText,
+    required Function onAcceptBtnPressed,
+    required Function onCancelBtnPressed,
+    Color backgroundColor = Colors.white,
+  }) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
+            ),
+          ),
+          backgroundColor: backgroundColor,
+          content: Text(mainContent,
+              style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                onAcceptBtnPressed();
+              },
+              child: Text(
+                acceptBtnText,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 237, 233, 233),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                onCancelBtnPressed();
+              },
+              child: Text(
+                cancelBtnText,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 237, 233, 233),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
